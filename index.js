@@ -1,15 +1,16 @@
 const express = require('express')
 const bodyParser = require('body-parser');
 const cors = require('cors');
-// const fileUpload = require('express-fileupload');
+const fileUpload = require('express-fileupload');
 const ObjectId = require("mongodb").ObjectID;
 require('dotenv').config()
 const port = process.env.PORT || 8080;
-        
+
+
 const app = express()
 app.use(cors());
 app.use(bodyParser.json());
-// app.use(fileUpload());
+app.use(fileUpload());
 
 
 
@@ -26,10 +27,41 @@ client.connect(err => {
                 // console.log(documents);
                 res.send(documents);
             })
-    });
+    })
+
+
+    app.post('/addReview', (req, res) => {
+
+        console.log(req);
+        const file = req.files.file;
+        const name = req.body.name;
+        const post = req.body.post;
+        const company = req.body.company;
+        const feedback = req.body.feedback;
+
+        const newImg = file.data;
+        const encImg = newImg.toString('base64');
+        console.log(req.body);
+        var image = {
+            contentType: file.mimetype,
+            size: file.size,
+            img: Buffer.from(encImg, 'base64')
+        };
+        console.log({ name, post, company, feedback, image })
+
+        testimonialCollection.insertOne({ name, post, company, feedback, image })
+            .then(result => {
+                // console.log('inserted count', result);
+                res.send(result.insertedCount > 0)
+            })
+    })
+
+
 
 
 });
+
+
 
 
 
