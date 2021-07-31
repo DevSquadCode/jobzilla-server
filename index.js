@@ -4,7 +4,8 @@ const cors = require('cors');
 // const fileUpload = require('express-fileupload');
 const ObjectId = require("mongodb").ObjectID;
 require('dotenv').config()
-const port = process.env.PORT || 8080;
+// const port = process.env.PORT || 8080;
+const port = 8080;
         
 const app = express()
 app.use(cors());
@@ -19,9 +20,29 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 client.connect(err => {
     const testimonialCollection = client.db(`${process.env.DB_NAME}`).collection("testimonials");
     // perform actions on the collection object3
+    const jobCategoriesCollection = client.db(`${process.env.DB_NAME}`).collection("jobcategories");
+    const jobListingCollection = client.db(`${process.env.DB_NAME}`).collection("joblisting");
 
     app.get('/testimonials', (req, res) => {
         testimonialCollection.find({})
+            .toArray((err, documents) => {
+                // console.log(documents);
+                res.send(documents);
+            })
+    });
+
+    //getting job-categories
+    app.get('/jobcategories', (req, res) => {
+        jobCategoriesCollection.find({})
+            .toArray((err, documents) => {
+                // console.log(documents);
+                res.send(documents);
+            })
+    });
+
+    //getting job-listing
+    app.get('/joblisting', (req, res) => {
+        jobListingCollection.find({})
             .toArray((err, documents) => {
                 // console.log(documents);
                 res.send(documents);
