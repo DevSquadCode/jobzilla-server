@@ -4,14 +4,8 @@ const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const ObjectId = require("mongodb").ObjectID;
 require('dotenv').config()
-// <<<<<<< HEAD
-// const port = process.env.PORT || 8080;
-const port = 8080;
-        
-// =======
-
-
-// >>>>>>> 66336f7fa532e25f0403b9ee78698a2a91a2a70f
+const port = process.env.PORT || 8080;
+// const port = 8080;
 
 const app = express()
 app.use(cors());
