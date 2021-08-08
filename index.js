@@ -19,9 +19,10 @@ const uri = `mongodb+srv://devSquad:${process.env.DB_PASS}@cluster0.133bl.mongod
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
     const testimonialCollection = client.db(`${process.env.DB_NAME}`).collection("testimonials");
-    // perform actions on the collection object3
     const jobCategoriesCollection = client.db(`${process.env.DB_NAME}`).collection("jobcategories");
     const jobListingCollection = client.db(`${process.env.DB_NAME}`).collection("joblisting");
+    const usersCollection = client.db(`${process.env.DB_NAME}`).collection("users");
+
 
     app.get('/testimonials', (req, res) => {
         testimonialCollection.find({})
@@ -58,6 +59,23 @@ client.connect(err => {
             })
     })
 
+
+    // add user to database
+    app.post('/addUser', (req, res) => {
+        usersCollection.insertOne(req.body)
+            .then(result => {
+                res.send(result.insertedCount > 0)
+            })
+    });
+
+    // get users
+    // app.get('/users', (req, res) => {
+    //     usersCollection.find({})
+    //         .toArray((err, documents) => {
+    //             // console.log(documents);
+    //             res.send(documents);
+    //         })
+    // })
 
 
     //getting job-categories
