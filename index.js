@@ -97,6 +97,17 @@ client.connect(err => {
     });
 
 
+    //post a job
+    app.post('/addJob', (req, res) => {
+        const job = req.body;
+        console.log(job);
+        jobListingCollection.insertOne(job)
+            .then((result) => {
+                res.send(result.insertedCount > 0)
+            })
+    });
+
+
 });
 
 
