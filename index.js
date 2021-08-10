@@ -22,6 +22,7 @@ client.connect(err => {
     // perform actions on the collection object3
     const jobCategoriesCollection = client.db(`${process.env.DB_NAME}`).collection("jobcategories");
     const jobListingCollection = client.db(`${process.env.DB_NAME}`).collection("joblisting");
+    const blogsCollection = client.db(`${process.env.DB_NAME}`).collection("blogs");
 
     app.get('/testimonials', (req, res) => {
         testimonialCollection.find({})
@@ -79,15 +80,59 @@ client.connect(err => {
     });
 
 
+    // bloogs route
+    app.get("/getblogs", (req, res) =>{
+        blogsCollection.find({})
+            .toArray((err, documents) => {
+                // console.log(documents);
+                res.send(documents);
+            })
+   })
+   
+   
+   app.post('/createBlogs',async (req, res) => {
+       // const title = req.body.title;
+       // const description = req.body.description;
+       const {title, description, image} = await req.body
+       
+       console.log(title, description, image);
+       
+   
+       // const file = req.files.file;
+       // const name = req.body.name;
+       // const post = req.body.post;
+       // const company = req.body.company;
+       // const feedback = req.body.feedback;
+   
+       // const newImg = file.data;
+       // const encImg = newImg.toString('base64');
+       // console.log(req.body);
+       // var image = {
+       //     contentType: file.mimetype,
+       //     size: file.size,
+       //     img: Buffer.from(encImg, 'base64')
+       // };
+       // console.log({ name, post, company, feedback, image })
+   
+       blogsCollection.insertOne({ title, description, image })
+           .then(result => {
+               console.log('inserted count', result);
+               res.send(result)
+           }).catch(err=>console.log(err))
+        console.log(title, description, image)
+   })
+   
+   
+   
+   app.get('/', (req, res) => {
+       res.send('Hello World!')
+   })
+   
+
 });
 
 
 
-
-
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-})
 
 
 app.listen(port, () => {
