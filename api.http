@@ -1,0 +1,13 @@
+GET http://localhost:8080/getblogs
+
+
+
+###
+POST http://localhost:8080/createBlogs
+Content-Type: application/json
+
+{
+    "title": "This is title2",
+    "description": "This is description",
+    "image":"book-covers-big-2019101610.jpg"
+}
