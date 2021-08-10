@@ -18,12 +18,14 @@ const { MongoClient } = require('mongodb');
 const uri = `mongodb+srv://devSquad:${process.env.DB_PASS}@cluster0.133bl.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
+  
     const testimonialCollection = client.db(`${process.env.DB_NAME}`).collection("testimonials");
-    // perform actions on the collection object3
     const jobCategoriesCollection = client.db(`${process.env.DB_NAME}`).collection("jobcategories");
     const jobListingCollection = client.db(`${process.env.DB_NAME}`).collection("joblisting");
     const blogsCollection = client.db(`${process.env.DB_NAME}`).collection("blogs");
-
+    const usersCollection = client.db(`${process.env.DB_NAME}`).collection("users");
+    const candidatesCollection = client.db(`${process.env.DB_NAME}`).collection("candidates");
+  
     app.get('/testimonials', (req, res) => {
         testimonialCollection.find({})
             .toArray((err, documents) => {
@@ -59,6 +61,34 @@ client.connect(err => {
             })
     })
 
+    // add profile
+
+    app.post('/addCandidateProfile', (req, res) => {
+        console.log(req.body)
+        candidatesCollection.insertOne(req.body)
+            .then(result => {
+                console.log(result.insertedCount);
+                res.send(result.insertedCount > 0)
+            })
+    })
+
+
+    // add user to database
+    app.post('/addUser', (req, res) => {
+        usersCollection.insertOne(req.body)
+            .then(result => {
+                res.send(result.insertedCount > 0)
+            })
+    });
+
+    // get users
+    // app.get('/users', (req, res) => {
+    //     usersCollection.find({})
+    //         .toArray((err, documents) => {
+    //             // console.log(documents);
+    //             res.send(documents);
+    //         })
+    // })
 
 
     //getting job-categories
@@ -128,6 +158,19 @@ client.connect(err => {
        res.send('Hello World!')
    })
    
+
+    //post a job
+    app.post('/addJob', (req, res) => {
+        const job = req.body;
+        console.log(job);
+        jobListingCollection.insertOne(job)
+            .then((result) => {
+                res.send(result.insertedCount > 0)
+            })
+    });
+
+
+});
 
 });
 
