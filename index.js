@@ -22,6 +22,7 @@ client.connect(err => {
     const jobCategoriesCollection = client.db(`${process.env.DB_NAME}`).collection("jobcategories");
     const jobListingCollection = client.db(`${process.env.DB_NAME}`).collection("joblisting");
     const usersCollection = client.db(`${process.env.DB_NAME}`).collection("users");
+    const candidatesCollection = client.db(`${process.env.DB_NAME}`).collection("candidates");
 
 
     app.get('/testimonials', (req, res) => {
@@ -55,6 +56,17 @@ client.connect(err => {
         testimonialCollection.insertOne({ name, post, company, feedback, image })
             .then(result => {
                 // console.log('inserted count', result);
+                res.send(result.insertedCount > 0)
+            })
+    })
+
+    // add profile
+
+    app.post('/addCandidateProfile', (req, res) => {
+        console.log(req.body)
+        candidatesCollection.insertOne(req.body)
+            .then(result => {
+                console.log(result.insertedCount);
                 res.send(result.insertedCount > 0)
             })
     })
