@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
-const ObjectId = require("mongodb").ObjectID;
+// const ObjectId = require("mongodb").ObjectID();
 require('dotenv').config()
 const port = process.env.PORT || 8080;
 // const port = 8080;
@@ -14,7 +14,7 @@ app.use(fileUpload());
 
 
 
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://devSquad:${process.env.DB_PASS}@cluster0.133bl.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
@@ -118,6 +118,16 @@ client.connect(err => {
                 res.send(documents);
             })
    })
+
+   app.get("/singleBlog/:id", (req, res) =>{
+       console.log(req.params.id)
+    blogsCollection.find({_id:ObjectId(req.params.id)})
+        .toArray((err, documents) => {
+
+            console.log(err);
+            res.send(documents);
+        })
+})
    
    
    app.post('/createBlogs',async (req, res) => {
