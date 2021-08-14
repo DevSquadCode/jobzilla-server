@@ -91,6 +91,16 @@ client.connect(err => {
     // })
 
 
+    //getting candidateProfiles 
+    app.get('/candidateProfile', (req, res) => {
+        candidatesCollection.find({})
+            .toArray((err, documents) => {
+                // console.log(documents);
+                res.send(documents);
+            })
+    });
+
+
     //getting job-categories
     app.get('/jobcategories', (req, res) => {
         jobCategoriesCollection.find({})
