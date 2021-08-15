@@ -43,6 +43,7 @@ client.connect((err) => {
       // console.log(documents);
       res.send(documents);
     });
+
   });
 
   app.post("/addReview", (req, res) => {
@@ -78,6 +79,36 @@ client.connect((err) => {
     candidatesCollection.insertOne(req.body).then((result) => {
       console.log(result.insertedCount);
       res.send(result.insertedCount > 0);
+
+
+    // get users
+    // app.get('/users', (req, res) => {
+    //     usersCollection.find({})
+    //         .toArray((err, documents) => {
+    //             // console.log(documents);
+    //             res.send(documents);
+    //         })
+    // })
+
+
+    //getting candidateProfiles 
+    app.get('/candidateProfile', (req, res) => {
+        candidatesCollection.find({})
+            .toArray((err, documents) => {
+                // console.log(documents);
+                res.send(documents);
+            })
+    });
+
+
+    //getting job-categories
+    app.get('/jobcategories', (req, res) => {
+        jobCategoriesCollection.find({})
+            .toArray((err, documents) => {
+                // console.log(documents);
+                res.send(documents);
+            })
+
     });
   });
 
