@@ -11,3 +11,9 @@ Content-Type: application/json
     "description": "This is description",
     "image":"book-covers-big-2019101610.jpg"
 }
+
+###
+GET http://localhost:8080/singleBlog/610ff42656abe58745b39c93
+
+###
+DELETE http://localhost:8080/delete/610ff42656abe58745b39c93

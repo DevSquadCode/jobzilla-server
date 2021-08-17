@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
-const ObjectId = require("mongodb").ObjectID;
+// const ObjectId = require("mongodb").ObjectID();
 require('dotenv').config()
 const port = process.env.PORT || 8080;
 // const port = 8080;
@@ -14,7 +14,7 @@ app.use(fileUpload());
 
 
 
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://devSquad:${process.env.DB_PASS}@cluster0.133bl.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
@@ -91,6 +91,16 @@ client.connect(err => {
     // })
 
 
+    //getting candidateProfiles 
+    app.get('/candidateProfile', (req, res) => {
+        candidatesCollection.find({})
+            .toArray((err, documents) => {
+                // console.log(documents);
+                res.send(documents);
+            })
+    });
+
+
     //getting job-categories
     app.get('/jobcategories', (req, res) => {
         jobCategoriesCollection.find({})
@@ -118,6 +128,16 @@ client.connect(err => {
                 res.send(documents);
             })
    })
+
+   app.get("/singleBlog/:id", (req, res) =>{
+       console.log(req.params.id)
+    blogsCollection.find({_id:ObjectId(req.params.id)})
+        .toArray((err, documents) => {
+
+            console.log(err);
+            res.send(documents);
+        })
+})
    
    
    app.post('/createBlogs',async (req, res) => {
@@ -152,7 +172,15 @@ client.connect(err => {
         console.log(title, description, image)
    })
    
-   
+   app.delete("/delete/:id", (req, res) => {
+    console.log(req.params.id);
+    blogsCollection
+      .deleteOne({ _id: ObjectId(req.params.id) })
+      .then((result) => {
+        console.log("Deleted Count", result)
+        res.send(result);
+      })
+  });
    
    app.get('/', (req, res) => {
        res.send('Hello World!')
