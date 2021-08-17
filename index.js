@@ -169,6 +169,16 @@ client.connect(err => {
             })
     });
 
+    // role
+    
+  app.post('/userRole', (req, res) => {
+    const email = req.body.email;
+    usersCollection.find({ email: email })
+      .toArray((err, admins) => {
+        res.send(admins.length > 0);
+      })
+  })
+
 
 });
 
