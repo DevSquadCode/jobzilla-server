@@ -81,6 +81,16 @@ client.connect(err => {
             })
     });
 
+    // get user role
+
+    app.get('/getUserRole', (req, res) => {
+        const queryEmail = req.query.email;
+        usersCollection.find({ email: queryEmail })
+            .toArray((err, user) => {
+                res.send(user);
+            })
+    })
+
     // get users
     // app.get('/users', (req, res) => {
     //     usersCollection.find({})
@@ -183,7 +193,7 @@ client.connect(err => {
   });
    
    app.get('/', (req, res) => {
-       res.send('Hello World!')
+       res.send('Hello JobZilla Users!')
    })
    
 
