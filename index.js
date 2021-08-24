@@ -1,35 +1,30 @@
-const express = require('express')
+// External exports
+const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
-// const ObjectId = require("mongodb").ObjectID();
-require('dotenv').config()
+require('dotenv').config();
+const { ObjectId } = require('mongodb');
+
+// internal export 
+const { testimonialCollection, candidatesCollection, usersCollection, jobCategoriesCollection, jobListingCollection, blogsCollection, client } = require('./dbCollections/dbCollections');
+const router = require('./routes/searchingRoutes');
+
 const port = process.env.PORT || 8080;
-// const port = 8080;
+
 
 const app = express()
 app.use(cors());
 app.use(bodyParser.json());
 app.use(fileUpload());
+app.use(router);
 
 
 
-const { MongoClient, ObjectId } = require('mongodb');
-const uri = `mongodb+srv://devSquad:${process.env.DB_PASS}@cluster0.133bl.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
-  
-    const testimonialCollection = client.db(`${process.env.DB_NAME}`).collection("testimonials");
-    const jobCategoriesCollection = client.db(`${process.env.DB_NAME}`).collection("jobcategories");
-    const jobListingCollection = client.db(`${process.env.DB_NAME}`).collection("joblisting");
-    const blogsCollection = client.db(`${process.env.DB_NAME}`).collection("blogs");
-    const usersCollection = client.db(`${process.env.DB_NAME}`).collection("users");
-    const candidatesCollection = client.db(`${process.env.DB_NAME}`).collection("candidates");
-  
     app.get('/testimonials', (req, res) => {
         testimonialCollection.find({})
             .toArray((err, documents) => {
-                // console.log(documents);
                 res.send(documents);
             })
     })
@@ -56,13 +51,11 @@ client.connect(err => {
 
         testimonialCollection.insertOne({ name, post, company, feedback, image })
             .then(result => {
-                // console.log('inserted count', result);
                 res.send(result.insertedCount > 0)
             })
     })
 
     // add profile
-
     app.post('/addCandidateProfile', (req, res) => {
         console.log(req.body)
         candidatesCollection.insertOne(req.body)
@@ -82,7 +75,6 @@ client.connect(err => {
     });
 
     // get user role
-
     app.get('/getUserRole', (req, res) => {
         const queryEmail = req.query.email;
         usersCollection.find({ email: queryEmail })
@@ -91,21 +83,10 @@ client.connect(err => {
             })
     })
 
-    // get users
-    // app.get('/users', (req, res) => {
-    //     usersCollection.find({})
-    //         .toArray((err, documents) => {
-    //             // console.log(documents);
-    //             res.send(documents);
-    //         })
-    // })
-
-
     //getting candidateProfiles 
     app.get('/candidateProfile', (req, res) => {
         candidatesCollection.find({})
             .toArray((err, documents) => {
-                // console.log(documents);
                 res.send(documents);
             })
     });
@@ -115,7 +96,6 @@ client.connect(err => {
     app.get('/jobcategories', (req, res) => {
         jobCategoriesCollection.find({})
             .toArray((err, documents) => {
-                // console.log(documents);
                 res.send(documents);
             })
     });
@@ -124,17 +104,15 @@ client.connect(err => {
     app.get('/joblisting', (req, res) => {
         jobListingCollection.find({})
             .toArray((err, documents) => {
-                // console.log(documents);
                 res.send(documents);
             })
     });
 
-
+    
     // bloogs route
     app.get("/getblogs", (req, res) =>{
         blogsCollection.find({})
             .toArray((err, documents) => {
-                // console.log(documents);
                 res.send(documents);
             })
    })
@@ -151,36 +129,14 @@ client.connect(err => {
    
    
    app.post('/createBlogs',async (req, res) => {
-       // const title = req.body.title;
-       // const description = req.body.description;
        const {title, description, image} = await req.body
-       
-       console.log(title, description, image);
-       
-   
-       // const file = req.files.file;
-       // const name = req.body.name;
-       // const post = req.body.post;
-       // const company = req.body.company;
-       // const feedback = req.body.feedback;
-   
-       // const newImg = file.data;
-       // const encImg = newImg.toString('base64');
-       // console.log(req.body);
-       // var image = {
-       //     contentType: file.mimetype,
-       //     size: file.size,
-       //     img: Buffer.from(encImg, 'base64')
-       // };
-       // console.log({ name, post, company, feedback, image })
-   
        blogsCollection.insertOne({ title, description, image })
            .then(result => {
                console.log('inserted count', result);
                res.send(result)
            }).catch(err=>console.log(err))
         console.log(title, description, image)
-   })
+   });
    
    app.delete("/delete/:id", (req, res) => {
     console.log(req.params.id);
@@ -219,8 +175,6 @@ client.connect(err => {
 
 
 });
-
-// });
 
 
 
